@@ -4,51 +4,61 @@ from collections import deque
 
 import click
 
+
 def describe_moves(moves: typing.List[typing.List[int]]) -> typing.List[str]:
     descriptions = []
-    for a, b in zip(moves, moves[1:]):
-        for i in range(len(a)):
-            for j in range(i + 1, len(a)):
-                remainders = [a[k] for k in range(len(a)) if k not in [i,j]]                
+    for move, next_move in zip(moves, moves[1:]):
+        for i in range(len(move)):
+            for j in range(i + 1, len(move)):
+                remainders = [
+                    move[k] for k in range(len(move)) if k not in [i, j]
+                ]
                 operations = {
                     "+": lambda x, y: x + y,
                     "-": lambda x, y: abs(x - y),
                     "*": lambda x, y: x * y,
                 }
-                if  a[j] != 0 and a[i] % a[j] == 0:
+                if move[j] != 0 and move[i] % move[j] == 0:
                     operations["/"] = lambda x, y: x // y
-                if a[i] != 0 and a[j] % a[i] == 0:
+                if move[i] != 0 and move[j] % move[i] == 0:
                     operations["/"] = lambda x, y: y // x
                 for op_sym, op in operations.items():
-                    b_candidate = sorted(remainders + [op(a[i], a[j])])
-                    if b_candidate == b:
-                        descriptions.append(f"{max(a[i], a[j])}{op_sym}{min(a[i], a[j])}")
+                    next_move_candidate = sorted(
+                        remainders + [op(move[i], move[j])])
+                    if next_move_candidate == next_move:
+                        descriptions.append(
+                            f"{max(move[i], move[j])}"
+                            f"{op_sym}"
+                            f"{min(move[i], move[j])}")
     return descriptions
 
 
-
-def solve_digits(numbers: typing.List[int] , target: int, how_many_sols=1) -> typing.List:
+def solve_digits(
+        numbers: typing.List[int],
+        target: int,
+        how_many_sols=1) -> typing.List:
     numbers.sort()
 
     todo = deque([[numbers]])
     solutions = []
-    
     while todo:
         act = todo.popleft()
         tip = act[-1]
         for i in range(len(tip)):
             for j in range(i + 1, len(tip)):
-                remainders = [tip[k] for k in range(len(tip)) if k not in [i,j]]                
+                remainders = [
+                    tip[k] for k in range(len(tip)) if k not in [i, j]
+                    ]
                 operations = [
                     lambda x, y: x + y,
                     lambda x, y: abs(x - y),
                     lambda x, y: x * y,
-                ]  
-                if  tip[j] != 0 and tip[i] % tip[j] == 0:
+                ]
+                if tip[j] != 0 and tip[i] % tip[j] == 0:
                     operations.append(lambda x, y: x // y)
                 if tip[i] != 0 and tip[j] % tip[i] == 0:
                     operations.append(lambda x, y: y // x)
-                
+
                 for op in operations:
                     new_tip = sorted(remainders + [op(tip[i], tip[j])])
                     if len(new_tip) > 1:
@@ -64,7 +74,9 @@ def solve_digits(numbers: typing.List[int] , target: int, how_many_sols=1) -> ty
     return solutions
 
 
-def solve_digits_with_moves(numbers: typing.List[int] , target: int, how_many_sols=1) -> typing.List:
+def solve_digits_with_moves(numbers: typing.List[int],
+                            target: int,
+                            how_many_sols=1) -> typing.List:
     return [
         describe_moves(solution)
         for solution in solve_digits(numbers, target, how_many_sols)
@@ -79,19 +91,22 @@ def solve_digits_with_moves(numbers: typing.List[int] , target: int, how_many_so
     "-t", "--target", type=int,
     help="target number to be built")
 @click.option(
-    "-c","--how_many_solutions", type=int,
+    "-c", "--how_many_solutions", type=int,
     help="The number of solutions the solver should return (None=find all)",
     default=None)
 def main(numbers, target, how_many_solutions):
     numbers = [int(number) for number in numbers.split(",")]
     t0 = time.time()
-    solutions = solve_digits_with_moves(numbers, target, how_many_sols=how_many_solutions)
+    solutions = solve_digits_with_moves(
+        numbers, target, how_many_sols=how_many_solutions)
     t1 = time.time()
-    print(f"Found {len(solutions)} solutions. Took {round(t1 - t0, 2)} seconds.")
+    print(
+        f"Found {len(solutions)} solutions. Took {round(t1 - t0, 2)} seconds.")
     for sol in solutions:
         for move in sol:
             print(move)
         print("\n")
+
 
 if __name__ == "__main__":
     main()

@@ -1,6 +1,6 @@
 import pytest
 
-from .solver import describe_moves, solve_digits, solve_digits_with_moves
+from .solver import describe_moves, solve_digits
 
 
 @pytest.mark.parametrize(
@@ -14,16 +14,16 @@ from .solver import describe_moves, solve_digits, solve_digits_with_moves
             [[1, 1], [0]],
             ["1-1"],
         ),
-                (
+        (
             [[2, 3], [6]],
             ["3*2"],
         ),
-                (
+        (
             [[6, 2], [3]],
             ["6/2"],
         ),
         (
-            [[1, 2, 5],[3, 5], [15]],
+            [[1, 2, 5], [3, 5], [15]],
             ["2+1", "5*3"],
         ),
 
@@ -67,7 +67,6 @@ def test_unique_single_steps(
         solution,
 ):
     assert solve_digits(numbers, target) == solution
-
 
 
 @pytest.mark.parametrize(
