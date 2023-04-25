@@ -39,6 +39,7 @@ def describe_moves(moves: typing.List[typing.List[int]]) -> typing.List[str]:
         for next_move_candidate, op_descr in generate_next_moves(move):
             if next_move_candidate == next_move:
                 descriptions.append(op_descr)
+                break
     return descriptions
 
 
