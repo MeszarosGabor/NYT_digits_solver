@@ -23,7 +23,7 @@ def main(numbers, target, how_many_solutions):
         numbers, target, how_many_sols=how_many_solutions)
     t1 = time.time()
     print(
-        f"Found {len(solutions)} solutions. Took {round(t1 - t0, 2)} seconds.")
+        f"Found {len(solutions)} solution{'' if len(solutions) == 1 else 's'}. Took {round(t1 - t0, 2)} seconds.")
     for sol in solutions:
         for move in sol:
             print(move)
